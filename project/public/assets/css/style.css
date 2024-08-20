@@ -3030,7 +3030,7 @@ overflow-x: hidden;
 }
 
 .card:hover {
-    box-shadow: 0 8px 50px #23232333;
+    box-shadow: 0 8px 50px #dc06ae33;
     transform: scale(1.02); /* Slightly scale up the card on hover */
 }
 

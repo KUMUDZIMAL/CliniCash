@@ -42,7 +42,7 @@ const PatientExpenseSchema = new Schema({
     },
     insurance: {
         type:String,
-        required: true,
+
     },
       insuranceAmount: {
         type: Number,

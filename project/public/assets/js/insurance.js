@@ -30,7 +30,7 @@ form.addEventListener('submit', function(event) {
     const urlEncoded = new URLSearchParams(formData).toString();
 
     // Send the data using fetch
-    fetch('/patient', {
+    fetch('/patientExp', {
         method: 'POST',
         body: urlEncoded,
         headers: {
