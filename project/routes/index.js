@@ -292,6 +292,8 @@ router.post('/patientinc', async (req, res) => {
         res.status(500).json({ success: false, message: 'An error occurred while saving the data.' });
   }
 })
+router.get('/facility', (req, res) => res.render('Facility'));
+router.get('/staff', (req, res) => res.render('staff'));
 router.get('/patientexp', (req, res) => res.render('patexp'));
 router.post('/patientexp', async (req, res) => {
   try {
