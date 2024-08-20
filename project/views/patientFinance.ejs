@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Report</title>
+    <link rel="stylesheet" href="css/chart.css">
+    <!-- Load jsPDF library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.6.0/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Financial Report</h1>
+    </header>
+    
+    <section id="filters">
+        <label for="timePeriodSelect">Select Time Period:</label>
+        <select id="timePeriodSelect">
+            <option value="WEEKLY" selected>Weekly</option>
+            <option value="DAILY">Daily</option>
+            <option value="MONTHLY">Monthly</option>
+            <option value="YEARLY">Yearly</option>
+        </select>
+    </section>
+
+    <section id="chart-container">
+        <canvas id="salesChart"></canvas>
+    </section>
+
+    <section id="report">
+        <h2>Financial Summary</h2>
+        <div class="report-item">
+            <h3>Total Expenses:</h3>
+            <p id="totalExpenses">₹0.00</p>
+        </div>
+        <div class="report-item">
+            <h3>Total Income:</h3>
+            <p id="totalIncome">₹0.00</p>
+        </div>
+        <div class="report-item">
+            <h3>Net Balance:</h3>
+            <p id="netBalance">₹0.00</p>
+        </div>
+    </section>
+
+    <section id="download">
+        <button id="downloadReport">Download Report as PDF</button>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+       
+        let chart;
+    
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('en-IN', {
+                style: 'currency',
+                currency: 'INR'
+            }).format(value);
+        }
+    
+        function getLabels(period) {
+            const today = new Date();
+            const currentYear = today.getFullYear();
+            const currentMonth = today.getMonth(); // 0-based index (0 = January, 7 = August)
+    
+            switch (period) {
+                case 'DAILY':
+                    return Array.from({ length: 31 }, (_, i) => (i + 1).toString()); // Days of the month
+                case 'MONTHLY':
+                    return Array.from({ length: 12 }, (_, i) => new Date(currentYear, i).toLocaleString('default', { month: 'short' })).slice(7); // Start from August
+                case 'YEARLY':
+                    return [currentYear]; // Show only current year
+                case 'WEEKLY':
+                default:
+                    return ['W1', 'W2', 'W3', 'W4', 'EXTRA'];
+            }
+        }
+    
+        async function fetchData(period) {
+            let endpoint = '';
+            const labels = getLabels(period);
+    
+            switch(period) {
+                case 'DAILY':
+                    endpoint = '/daily';
+                    break;
+                case 'MONTHLY':
+                    endpoint = '/monthly';
+                    break;
+                case 'YEARLY':
+                    endpoint = '/yearly';
+                    break;
+                case 'WEEKLY':
+                default:
+                    endpoint = '/weekly';
+            }
+    
+            try {
+                const response = await fetch(endpoint);
+                if (!response.ok) throw new Error('Network response was not ok');
+                const data = await response.json();
+                console.log("API Data:", data);
+    
+                const actualExpense = {
+                    DAILY: data.dailyTotal,
+                    WEEKLY: data.weeklyTotal,
+                    MONTHLY: data.monthlyTotal,
+                    YEARLY: data.yearlyTotal
+                }[period] || [];
+    
+                const actualIncome = {
+                    DAILY: data.dailyTotalIncome,
+                    WEEKLY: data.weeklyTotalIncome,
+                    MONTHLY: data.monthlyTotalIncome,
+                    YEARLY: data.yearlyTotalIncome
+                }[period] || [];
+    
+                let allocatedAmount = {
+                    DAILY: data.dailyAllocatedAmount,
+                    WEEKLY: data.weeklyAllocatedAmount,
+                    MONTHLY: data.monthlyAllocatedAmount,
+                    YEARLY: data.yearlyAllocatedAmount
+                }[period] || [];
+    
+                if (!Array.isArray(allocatedAmount)) {
+                    allocatedAmount = [allocatedAmount];
+                }
+    
+                const processedAllocatedAmount = allocatedAmount.map(item =>
+                    item && item.$numberDecimal ? parseFloat(item.$numberDecimal) : parseFloat(item)
+                );
+    
+                const processedActualExpense = Array.isArray(actualExpense) ? actualExpense : [actualExpense];
+                const processedActualIncome = Array.isArray(actualIncome) ? actualIncome : [actualIncome];
+    
+                document.getElementById('totalExpenses').textContent = formatCurrency(processedActualExpense.reduce((a, b) => a + b, 0));
+                document.getElementById('totalIncome').textContent = formatCurrency(processedActualIncome.reduce((a, b) => a + b, 0));
+                document.getElementById('netBalance').textContent = formatCurrency(
+                    processedActualIncome.reduce((a, b) => a + b, 0) - processedActualExpense.reduce((a, b) => a + b, 0)
+                );
+    
+                if (chart) {
+                    chart.destroy();
+                }
+    
+                const ctx = document.getElementById('salesChart').getContext('2d');
+                chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Actual Expense',
+                                data: processedActualExpense,
+                                backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Budget',
+                                data: processedAllocatedAmount,
+                                backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Actual Income',
+                                data: processedActualIncome,
+                                backgroundColor: 'rgba(153, 102, 255, 0.6)',
+                                borderColor: 'rgba(153, 102, 255, 1)',
+                                borderWidth: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return formatCurrency(value);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+    
+        document.getElementById('timePeriodSelect').addEventListener('change', (event) => {
+            const selectedPeriod = event.target.value;
+            fetchData(selectedPeriod);
+        });
+    
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchData('WEEKLY'); // Load weekly data by default on page load
+        });
+    
+        async function generatePDF() {
+         
+            const doc = new jsPDF();
+    
+            // Add title
+            doc.setFontSize(22);
+            doc.text("Financial Report", 14, 20);
+    
+            // Add current date
+            doc.setFontSize(12);
+            const today = new Date();
+            doc.text(`Date: ${today.toLocaleDateString()}`, 14, 30);
+    
+            // Add chart image
+            const canvas = document.getElementById('salesChart');
+            if (canvas) {
+                const imgData = canvas.toDataURL('image/png');
+                doc.addImage(imgData, 'PNG', 14, 40, 180, 100);
+            } else {
+                doc.text('No chart available', 14, 40);
+            }
+    
+            // Add financial summary
+            doc.setFontSize(16);
+            doc.text("Financial Summary", 14, 160);
+            doc.setFontSize(12);
+            doc.text(`Total Expenses: ${document.getElementById('totalExpenses').textContent}`, 14, 170);
+            doc.text(`Total Income: ${document.getElementById('totalIncome').textContent}`, 14, 180);
+            doc.text(`Net Balance: ${document.getElementById('netBalance').textContent}`, 14, 190);
+    
+            // Save the PDF
+            doc.save('financial_report.pdf');
+        }
+    
+        document.getElementById('downloadReport').addEventListener('click', generatePDF);
+    </script>
+    
+  
+     
+         
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facility Management - Expense Entry</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 40px;
+            color: #333;
+        }
+
+        .form-container {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .form-container:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        h2 {
+            text-align: center;
+            color: #444;
+            margin-bottom: 25px;
+            font-size: 1.5em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #333;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1.05em;
+            transition: border-color 0.3s ease;
+            background-color: #fafafa;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            margin-top: 12px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .summary-container {
+            max-width: 900px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .summary-container h3 {
+            text-align: center;
+            color: #444;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+        }
+
+        .summary-container p {
+            margin: 10px 0;
+            font-size: 1.05em;
+            color: #555;
+        }
+
+        .summary-container p span {
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="form-container">
+    <h2>Facility Management - Expense Entry</h2>
+    <form id="expenseForm">
+        <div class="form-group">
+            <label for="facilityID">Facility ID:</label>
+            <input type="text" id="facilityID" name="facilityID" placeholder="Enter Facility ID" required>
+        </div>
+        <div class="form-group">
+            <label for="facilityName">Facility Name:</label>
+            <input type="text" id="facilityName" name="facilityName" placeholder="Enter Facility Name" required>
+        </div>
+        <div class="form-group">
+            <label for="expenseCategory">Expense Category:</label>
+            <select id="expenseCategory" name="expenseCategory">
+                <option value="maintenance">Maintenance</option>
+                <option value="utilities">Utilities</option>
+                <option value="supplies">Supplies</option>
+                <option value="services">Services</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="expenseDescription">Expense Description:</label>
+            <textarea id="expenseDescription" name="expenseDescription" rows="4" placeholder="Describe the expense" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="expenseDate">Date of Expense:</label>
+            <input type="date" id="expenseDate" name="expenseDate" required>
+        </div>
+        <div class="form-group">
+            <label for="vendorName">Vendor Name:</label>
+            <input type="text" id="vendorName" name="vendorName" placeholder="Enter Vendor Name" required>
+        </div>
+        <div class="form-group">
+            <label for="invoiceNumber">Invoice Number:</label>
+            <input type="text" id="invoiceNumber" name="invoiceNumber" placeholder="Enter Invoice Number" required>
+        </div>
+        <div class="form-group">
+            <label for="invoiceAttachment">Invoice Attachment:</label>
+            <input type="file" id="invoiceAttachment" name="invoiceAttachment">
+        </div>
+        <div class="form-group">
+            <label for="amount">Amount:</label>
+            <input type="number" id="amount" name="amount" step="0.01" placeholder="Enter Amount" required>
+        </div>
+        <div class="form-group">
+            <label for="paymentMethod">Payment Method:</label>
+            <select id="paymentMethod" name="paymentMethod">
+                <option value="credit">Credit Card</option>
+                <option value="bank_transfer">Bank Transfer</option>
+                <option value="cash">Cash</option>
+                <option value="check">Check</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="maintenanceSchedule">Maintenance Schedule:</label>
+            <input type="date" id="maintenanceSchedule" name="maintenanceSchedule">
+        </div>
+        <div class="form-group">
+            <label for="approvalStatus">Approval Status:</label>
+            <select id="approvalStatus" name="approvalStatus">
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="notes">Notes:</label>
+            <textarea id="notes" name="notes" rows="4" placeholder="Any additional notes"></textarea>
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+</div>
+
+<div id="summaryContainer" class="summary-container" style="display:none;">
+    <h3>Submitted Expense Entry</h3>
+    <p><span>Facility ID:</span> <span id="summaryFacilityID"></span></p>
+    <p><span>Facility Name:</span> <span id="summaryFacilityName"></span></p>
+    <p><span>Expense Category:</span> <span id="summaryExpenseCategory"></span></p>
+    <p><span>Expense Description:</span> <span id="summaryExpenseDescription"></span></p>
+    <p><span>Date of Expense:</span> <span id="summaryExpenseDate"></span></p>
+    <p><span>Vendor Name:</span> <span id="summaryVendorName"></span></p>
+    <p><span>Invoice Number:</span> <span id="summaryInvoiceNumber"></span></p>
+    <p><span>Amount:</span> <span id="summaryAmount"></span></p>
+    <p><span>Payment Method:</span> <span id="summaryPaymentMethod"></span></p>
+    <p><span>Maintenance Schedule:</span> <span id="summaryMaintenanceSchedule"></span></p>
+    <p><span>Approval Status:</span> <span id="summaryApprovalStatus"></span></p>
+    <p><span>Notes:</span> <span id="summaryNotes"></span></p>
+</div>
+
+<script>
+    document.getElementById('expenseForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        // Capture the form data
+        const facilityID = document.getElementById('facilityID').value;
+        const facilityName = document.getElementById('facilityName').value;
+        const expenseCategory = document.getElementById('expenseCategory').value;
+        const expenseDescription = document.getElementById('expenseDescription').value;
+        const expenseDate = document.getElementById('expenseDate').value;
+        const vendorName = document.getElementById('vendorName').value;
+        const invoiceNumber = document.getElementById('invoiceNumber').value;
+        const amount = document.getElementById('amount').value;
+        const paymentMethod = document.getElementById('paymentMethod').value;
+        const maintenanceSchedule = document.getElementById('maintenanceSchedule').value;
+        const approvalStatus = document.getElementById('approvalStatus').value;
+        const notes = document.getElementById('notes').value;
+
+        // Display the captured data in the summary section
+        document.getElementById('summaryFacilityID').textContent = facilityID;
+        document.getElementById('summaryFacilityName').textContent = facilityName;
+        document.getElementById('summaryExpenseCategory').textContent = expenseCategory;
+        document.getElementById('summaryExpenseDescription').textContent = expenseDescription;
+        document.getElementById('summaryExpenseDate').textContent = expenseDate;
+        document.getElementById('summaryVendorName').textContent = vendorName;
+        document.getElementById('summaryInvoiceNumber').textContent = invoiceNumber;
+        document.getElementById('summaryAmount').textContent = amount;
+        document.getElementById('summaryPaymentMethod').textContent = paymentMethod;
+        document.getElementById('summaryMaintenanceSchedule').textContent = maintenanceSchedule;
+        document.getElementById('summaryApprovalStatus').textContent = approvalStatus;
+        document.getElementById('summaryNotes').textContent = notes;
+
+        // Show the summary container
+        document.getElementById('summaryContainer').style.display = 'block';
+    });
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Management System</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+        .pm-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        .pm-header {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        .pm-form-group {
+            margin-bottom: 20px;
+        }
+        .pm-form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+        .pm-form-group input,
+        .pm-form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        .pm-button-group {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .pm-button-group button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 0 10px;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+        .pm-button-group button:hover {
+            background-color: #0056b3;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .pm-button-group button.pm-remove {
+            background-color: #dc3545;
+        }
+        .pm-button-group button.pm-remove:hover {
+            background-color: #c82333;
+        }
+        .pm-list {
+            margin-top: 30px;
+        }
+        .pm-list-item {
+            padding: 15px;
+            border: 1px solid #ddd;
+            background: #fafafa;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        .pm-list-item:last-child {
+            border-bottom: none;
+        }
+        .total-income {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+
+    <div class="pm-container">
+        <h1 class="pm-header">Patient Management System</h1>
+        <form id="patient-form" action="/patientinc" method="POST" enctype="application/x-www-form-urlencoded">
+            <div class="pm-form-group">
+                <label for="patient-name">Patient Name</label>
+                <input type="text" id="patient-name" name="patientName" required>
+            </div>
+            <div class="pm-form-group">
+                <label for="full-payment-received">Full Payment Received</label>
+                <select id="full-payment-received" name="fullPaymentReceived" required>
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                </select>
+            </div>
+            <div class="pm-form-group">
+                <label for="payment-received">Payment Received</label>
+                <input type="number" id="payment-received" name="paymentReceived" required>
+            </div>
+            <div class="pm-form-group">
+                <label for="transaction-date">Date of Transaction</label>
+                <input type="date" id="transaction-date" name="transactionDate" required>
+            </div>
+            <div class="pm-form-group">
+                <label for="receipt">Receipt</label>
+                <input type="file" id="receipt" name="receipt">
+            </div>
+            <div class="pm-form-group">
+                <label for="patient-bill">Patient Bill</label>
+                <input type="file" id="patient-bill" name="patientBill">
+            </div>
+            <div class="pm-button-group">
+                <button type="submit">Submit</button>
+                <button type="button" class="pm-remove">Remove</button>
+            </div>
+        </form>
+        <div class="pm-list" id="list">
+            <!-- List items will be added here -->
+        </div>
+        <div class="total-income" id="total-income">
+            Total Income: ₹ 0
+        </div>
+    </div>
+
+    <script>
+        let totalIncome = 0;
+            form=document.getElementById('patient-form')
+form.addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the form from submitting the default way
+
+const FORMDATA = new FormData(form);
+    // Send the data using fetch
+    const urlEncoded = new URLSearchParams(FORMDATA).toString();
+
+    // Send the data using fetch
+    fetch('/patientinc', {
+        method: 'POST',
+        body: urlEncoded,
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    })
+    
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Data stored successfully!');
+        } else {
+            alert('There was an error storing the data.');
+        }
+    })
+    .catch(error => console.error('Error:', error));
+            const formData = new FormData(event.target);
+            const patientName = formData.get('patientName');
+            const fullPaymentReceived = formData.get('fullPaymentReceived') === 'true';
+            const paymentReceived = parseFloat(formData.get('paymentReceived')) || 0;
+            const transactionDate = formData.get('transactionDate');
+            const receipt = formData.get('receipt') ? formData.get('receipt').name : '';
+            const patientBill = formData.get('patientBill') ? formData.get('patientBill').name : '';
+
+            if (patientName && paymentReceived) {
+                const list = document.getElementById('list');
+                const listItem = document.createElement('div');
+                listItem.classList.add('pm-list-item');
+                listItem.dataset.paymentReceived = paymentReceived; // Store payment received in data attribute
+                
+                listItem.innerHTML = `
+                    <div>
+                        <strong>Patient Name:</strong> ${patientName} <br>
+                        <strong>Full Payment Received:</strong> ${fullPaymentReceived ? 'Yes' : 'No'} <br>
+                        <strong>Payment Received:</strong>₹ ${paymentReceived.toFixed(2)} <br>
+                        <strong>Date of Transaction:</strong> ${transactionDate || 'N/A'} <br>
+                        <strong>Receipt:</strong> ${receipt || 'N/A'} <br>
+                        <strong>Patient Bill:</strong> ${patientBill || 'N/A'} <br>
+                    </div>
+                    <button class="pm-remove" onclick="removeItem(this)">Remove</button>
+                `;
+                list.appendChild(listItem);
+
+                // Update total income
+                totalIncome += paymentReceived;
+                document.getElementById('total-income').textContent = `Total Income: ₹ ${totalIncome.toFixed(2)}`;
+
+                // Clear input fields
+                event.target.reset();
+            } else {
+                alert('Please fill in all required fields.');
+            }
+        });
+
+        function removeItem(button) {
+            const listItem = button.parentElement;
+            const paymentReceived = parseFloat(listItem.dataset.paymentReceived) || 0;
+            
+            // Update total income
+            totalIncome -= paymentReceived;
+            document.getElementById('total-income').textContent = `Total Income: ₹ ${totalIncome.toFixed(2)}`;
+
+            listItem.remove();
+        }
+    </script>
+</body>
+</html>

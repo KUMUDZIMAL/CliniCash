@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monthly Budget vs Actual Expenses</title>
+</head>
+<body>
+    <canvas id="budgetChart"></canvas>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        async function fetchData() {
+            // const response = await fetch('/monthly-sum'); // Uncomment and adjust the endpoint as needed
+            // const data = await response.json();
+
+            // Example data for 12 months
+            const actualExpenses = [20000, 18000, 22000, 25000, 24000, 23000, 21000, 19000, 26000, 24000, 22000, 23000];
+            const budgetedAmounts = [15000, 16000, 17000, 18000, 19000, 20000, 21000, 22000, 23000, 24000, 25000, 26000];
+
+            const ctx = document.getElementById('budgetChart').getContext('2d');
+            const budgetChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'], // Labels for each month
+                    datasets: [{
+                        label: 'Budgeted',
+                        data: budgetedAmounts,
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)', // Color for budgeted amounts
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }, {
+                        label: 'Actual',
+                        data: actualExpenses,
+                        backgroundColor: 'rgba(255, 99, 132, 0.6)', // Color for actual expenses
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true // Start the y-axis at zero
+                        }
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false // Ensure the chart adapts to the container size
+                }
+            });
+        }
+
+        fetchData(); // Call the function to fetch data and plot the chart
+    </script>
+</body>
+</html>
