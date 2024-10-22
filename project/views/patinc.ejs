@@ -210,17 +210,33 @@ const FORMDATA = new FormData(form);
                 listItem.classList.add('pm-list-item');
                 listItem.dataset.paymentReceived = paymentReceived; // Store payment received in data attribute
                 
-                listItem.innerHTML = `
-                    <div>
-                        <strong>Patient Name:</strong> ${patientName} <br>
-                        <strong>Full Payment Received:</strong> ${fullPaymentReceived ? 'Yes' : 'No'} <br>
-                        <strong>Payment Received:</strong>₹ ${paymentReceived.toFixed(2)} <br>
-                        <strong>Date of Transaction:</strong> ${transactionDate || 'N/A'} <br>
-                        <strong>Receipt:</strong> ${receipt || 'N/A'} <br>
-                        <strong>Patient Bill:</strong> ${patientBill || 'N/A'} <br>
-                    </div>
-                    <button class="pm-remove" onclick="removeItem(this)">Remove</button>
-                `;
+                listItem.innerHTML = `<table border="1">
+    <thead>
+        <tr>
+            <th>Patient Name</th>
+            <th>Full Payment Received</th>
+            <th>Payment Received</th>
+            <th>Date of Transaction</th>
+            <th>Receipt</th>
+            <th>Patient Bill</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>${patientName}</td>
+            <td>${fullPaymentReceived ? 'Yes' : 'No'}</td>
+            <td>₹ ${paymentReceived.toFixed(2)}</td>
+            <td>${transactionDate || 'N/A'}</td>
+            <td>${receipt || 'N/A'}</td>
+            <td>${patientBill || 'N/A'}</td>
+            <td><button class="pm-remove" onclick="removeItem(this)">Remove</button></td>
+        </tr>
+    </tbody>
+</table>
+
+   
+`;
                 list.appendChild(listItem);
 
                 // Update total income
@@ -234,16 +250,13 @@ const FORMDATA = new FormData(form);
             }
         });
 
-        function removeItem(button) {
-            const listItem = button.parentElement;
-            const paymentReceived = parseFloat(listItem.dataset.paymentReceived) || 0;
-            
-            // Update total income
-            totalIncome -= paymentReceived;
-            document.getElementById('total-income').textContent = `Total Income: ₹ ${totalIncome.toFixed(2)}`;
-
-            listItem.remove();
-        }
+       
+            function removeItem(button) {
+    // Get the row (tr) containing the button and remove it
+    const row = button.closest('tr');
+    row.remove();
+}
+        
        
  
 

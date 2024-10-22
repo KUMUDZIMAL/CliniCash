@@ -15,6 +15,7 @@ const REFRESH_TOKEN_SECRET_MIDDLEWARE = require('../middlewares/refreshAccessTok
 const { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } = require('./generateKeys')
 dotenv.config();
 
+
 const getDailySum = async () => {
   const startOfDay = new Date();
   startOfDay.setHours(0, 0, 0, 0);
@@ -149,6 +150,15 @@ getWeeklySum();
 getYearlySum();
       
 // Corrected GET route
+router.get('/insurance', (req, res) => {
+  res.render('insurrance'); // Render the chart.ejs file
+});
+router.get('/hospitals', (req, res) => {
+  res.render('hospital'); // Render the chart.ejs file
+});
+router.get('/book', (req, res) => {
+  res.render('form'); // Render the chart.ejs file
+});
 router.get('/chart', (req, res) => {
   res.render('chart'); // Render the chart.ejs file
 });
@@ -535,7 +545,7 @@ router.post('/login', async (req, res) => {
     });
 
     // Redirect to the homepage
-    res.redirect('/');
+    res.redirect('/services');
   } catch (err) {
     console.error('Server error:', err);
     res.status(500).json({ message: err.message });

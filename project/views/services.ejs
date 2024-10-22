@@ -147,15 +147,13 @@
                                 </li>
                                 </li>
                                 <li><a href="/contact">Contact Us</a></li>
+                                <li><a href="/book">Book Appointment</a></li>
                                 <li><a href="/logout">Logout</a></li>
                             </ul>
                         </div>
                     </nav>
                 </div>
-                <div class="header_right_content">
-                    <div class="link-btn"><a href="#" class="btn_style_one">Register</a></div>
-                    <div class="link-btn"><a href="#" class="btn_style_one">Login</a></div>
-                </div> 
+             
             </div>
         </div>
     </div>
@@ -236,8 +234,8 @@
                 <div class="card-avatar"></div>
                 <div class="card-title">Patient Management</div>
                 <div style="display: flex;">
-                <button onclick=getPatientInc()>Edit</button>
-                <button onclick=getPatientView() style="margin-left:15px;">View </button>
+                <button style="font-size: 20px;" onclick=getPatientInc()>Edit</button>
+                <button onclick=getPatientView() style="margin-left:15px; font-size: 20px;">View </button>
             </div>
             </div>
         </div>
@@ -247,8 +245,8 @@
                 <div class="card-avatar"></div>
                 <div class="card-title">Budget Management</div>
               <div style="display: flex; ">
-                <button onclick=getBudget()>Edit</button>
-                <button  style="margin-left:15px;">View </button>
+                <button style="font-size: 20px;" onclick=getBudget()>Edit</button>
+                <button  style="margin-left:15px; font-size: 20px;">View </button>
             </div>
         </div>
         </div>
@@ -258,8 +256,8 @@
                 <div class="card-avatar"></div>
                 <div class="card-title">Supply Management</div>
                 <div style="display: flex;">
-                <button onclick=getSupplyEdit()>Edit</button>
-                <button  style="margin-left:15px;" onclick=getSupplyView()>View </button>
+                <button  style="font-size: 20px;" onclick=getSupplyEdit()>Edit</button>
+                <button  style="margin-left:15px; font-size: 20px;" onclick=getSupplyView()> View </button>
             </div>
             </div>
         </div>
@@ -270,8 +268,8 @@
                 <div class="card-avatar"></div>
                 <div class="card-title">Facility Management</div>
                 <div style="display: flex;">
-                <button>Edit</button>
-                <button  style="margin-left:15px;">View </button>
+                <button style="font-size: 20px;" onclick=getFacilityEdit() >Edit</button>
+                <button  style="margin-left:15px; font-size: 20px;">View </button>
             </div>
             </div>
         </div>
@@ -281,8 +279,8 @@
                 <div class="card-avatar"></div>
                 <div class="card-title">Staff Management</div>
                 <div style="display: flex;">
-                <button>Edit</button>
-                <button  style="margin-left:15px;" >View </button>
+                <button style="font-size: 20px;"onclick=getStaffEdit() >Edit</button>
+                <button style="margin-left:15px; font-size: 20px;">View </button>
                 </div>
             </div>
         </div>
@@ -291,8 +289,8 @@
                 <div class="card-avatar"></div>
                 <div class="card-title">Others</div>
                 <div style="display: flex;">
-                <button>Edit</button>
-                <button  style="margin-left:15px;" >View </button>
+                <button style="font-size: 20px;" >Edit</button>
+                <button style="margin-left:20px; font-size: 20px;" >View </button>
                 </div>
             </div>
         </div>
@@ -384,6 +382,12 @@ function getPatientInc(){
 }
 function getPatientView(){
     window.location.href="/patientFinance"
+}
+function getStaffEdit(){
+    window.location.href="/staff"
+}
+function getFacilityEdit(){
+    window.location.href="/facility"
 }
 function getSupplyView(){
     window.location.href="/chart"
